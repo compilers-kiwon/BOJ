@@ -1,3 +1,13 @@
+/*
+	f(n) = f(n-1)*f(n-2)
+		 = f(n-1-1)*f(n-1-2)*f(n-2-1)*f(n-2-2)
+		 = f(n-1-1-1)*f(n-1-1-2)*f(n-1-2-1)*f(n-1-2-2)*f(n-2-1-1)*f(n-2-1-2)*f(n-2-2-1)*f(n-2-2-2)
+		 = ....
+		 
+	How many times are f(0) and f(1) called?
+	f(0) and f(1) are leaf function so that they will just return without any recursion.  
+*/
+
 #include	<iostream>
 
 using namespace	std;
