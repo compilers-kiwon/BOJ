@@ -16,12 +16,13 @@ typedef	long long int		int64;
 typedef	pair<int64,int64>	NumOfCall;
 
 #define	MAX_NUM	40
+#define	NONE	-1
 
 NumOfCall	get_dp(int n,NumOfCall* dp)
 {
 	NumOfCall&	ret = dp[n];
 	
-	if( ret.first != -1 && ret.second != -1 )
+	if( ret.first != NONE && ret.second != NONE )
 	{
 		return	ret;
 	}
@@ -47,7 +48,7 @@ int			main(void)
 	
 	for(int i=2;i<=MAX_NUM;i++)
 	{
-		dp[i] = make_pair(-1,-1);
+		dp[i] = make_pair(NONE,NONE);
 	}
 	
 	cin>>T;
