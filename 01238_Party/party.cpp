@@ -1,60 +1,93 @@
 #include	<iostream>
+#include	<vector>
+#include	<queue>
 
 using namespace	std;
 
-#define	MAX_NUM	(1000+1)
-#define	INF		10000000
+typedef	pair<int,int>	Path;	// first:to,second:time
+typedef	pair<int,int>	State;	// first:-time,second:village
 
-int	table[MAX_NUM][MAX_NUM];
+#define	MAX_SIZE	(1000+1)
+#define	INF			0x7FFFFFFF
 
-int	main(void)
+int				N,M,X;
+vector<Path>	connected[MAX_SIZE];
+
+void	input(void)
 {
-	int	N,M,X;
-	
 	cin>>N>>M>>X;
-	
-	for(int i=1;i<=N;i++)
-	{
-		for(int j=1;j<=N;j++)
-		{
-			table[i][j] = INF;
-		
-		}
-		table[i][i] = 0;
-	}
 	
 	for(int i=1;i<=M;i++)
 	{
-		int	from,to,t;
+		int	from,to,time;
 		
-		cin>>from>>to>>t;
-		table[from][to] = t;
+		cin>>from>>to>>time;
+		connected[from].push_back(make_pair(to,time));
 	}
+}
+
+int		get_shortest_path_time(int from,int to)
+{
+	priority_queue<State>	pq;
+	vector<int>				dp(N+1,INF);
+	int						ret;
 	
-	for(int k=1;k<=N;k++)
+	dp[from] = 0;
+	pq.push(make_pair(0,from));
+	
+	for(;!pq.empty();)
 	{
-		for(int i=1;i<=N;i++)
+		int	current_time,current_village;
+		
+		current_time = -pq.top().first;
+		current_village = pq.top().second;
+		
+		pq.pop();
+		
+		if( current_village == to )
 		{
-			for(int j=1;j<=N;j++)
+			ret = current_time;
+			break;
+		}
+		
+		vector<Path>&	adj = connected[current_village];
+		
+		for(int i=0;i<adj.size();i++)
+		{
+			int&	adj_v = adj[i].first;
+			int&	adj_t = adj[i].second;
+			
+			if( current_time+adj_t < dp[adj_v] )
 			{
-				if( table[i][j] > table[i][k]+table[k][j] )
-				{
-					table[i][j] = table[i][k]+table[k][j];
-				}
+				dp[adj_v] = current_time+adj_t;
+				pq.push(make_pair(-(current_time+adj_t),adj_v));
 			}
 		}
 	}
 	
-	int	max_time = 0;
+	return	ret;
+}
+
+int		main(void)
+{
+	cin.tie(NULL);
+	cin.sync_with_stdio(false);
+	
+	input();
+	
+	int	max_time;
+	
+	max_time = 0;
 	
 	for(int i=1;i<=N;i++)
 	{
-		int	time;
+		int	t;
 		
-		time = table[i][X]+table[X][i];
-		max_time = max(max_time,time);
+		t = get_shortest_path_time(i,X)+get_shortest_path_time(X,i);
+		max_time = max(max_time,t);
 	}
-	cout<<max_time<<endl;
+	
+	cout<<max_time<<'\n';
 	
 	return	0;
 }
