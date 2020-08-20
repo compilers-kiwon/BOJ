@@ -1,0 +1,7 @@
+A=input()
+B=input()
+n1=int(A)
+n2=int(B)
+print(n1+n2)
+print(n1-n2)
+print(n1*n2)
