@@ -2,24 +2,25 @@
 #include	<map>
 #include	<string>
 #include	<vector>
+#include	<cfloat>
 
 using namespace	std;
 
 #define	MAX_NUM_OF_CITY			(100+1)
 #define	MAX_NUM_OF_VISITED_CITY	(200+1)
-#define	INF						100000000
+#define	INF						DBL_MAX
 
-typedef	pair<string,int>	Rail;
+typedef	pair<string,double>	Rail;
 
 int				N,R,M,K;
 string			city_to_visit[MAX_NUM_OF_VISITED_CITY];
 vector<Rail>	connected[MAX_NUM_OF_CITY][MAX_NUM_OF_CITY];
 map<string,int>	city_index;
-int				cost_table[MAX_NUM_OF_CITY][MAX_NUM_OF_CITY];
+double			cost_table[MAX_NUM_OF_CITY][MAX_NUM_OF_CITY];
 
-int		get_cost(Rail& r,bool railro_flag)
+double	get_cost(Rail& r,bool railro_flag)
 {
-	int	result;
+	double	result;
 	
 	result = r.second;
 	
@@ -29,11 +30,11 @@ int		get_cost(Rail& r,bool railro_flag)
 		
 		if( name == "Mugunghwa" || name == "ITX-Saemaeul" || name == "ITX-Cheongchun" )
 		{
-			result = 0;
+			result = 0.0;
 		}
 		else if( name == "S-Train" || name == "V-Train" )
 		{
-			result /= 2;
+			result /= 2.0;
 		}
 	}
 	
@@ -48,7 +49,7 @@ void	build_cost_table(bool with_railro)
 		{
 			if( i == j )
 			{
-				cost_table[i][j] = 0;
+				cost_table[i][j] = 0.0;
 				continue;
 			}
 			else
@@ -75,11 +76,12 @@ void	build_cost_table(bool with_railro)
 	}
 }
 
-int		get_total_cost(void)
+double	get_total_cost(void)
 {
-	int	t,i;
+	double	t;
+	int		i;
 	
-	for(t=0,i=2;i<=M;i++)
+	for(t=0.0,i=2;i<=M;i++)
 	{
 		string&	from = city_to_visit[i-1];
 		string&	to = city_to_visit[i];
@@ -114,7 +116,7 @@ int		main(void)
 	for(int i=1;i<=K;i++)
 	{
 		string	Type,S,E;
-		int		cost;
+		double	cost;
 		
 		cin>>Type>>S>>E>>cost;
 		
@@ -127,10 +129,10 @@ int		main(void)
 		connected[city_index_2][city_index_1].push_back(make_pair(Type,cost));
 	}
 	
-	int	with_railro_cost,without_railro_cost;
+	double	with_railro_cost,without_railro_cost;
 	
 	build_cost_table(true);
-	with_railro_cost = get_total_cost()+R;
+	with_railro_cost = get_total_cost()+(double)R;
 	
 	build_cost_table(false);
 	without_railro_cost = get_total_cost();
