@@ -12,6 +12,8 @@ typedef	pair<int,int>	State;	//first:-cost, second:current_v
 typedef	pair<int,int>	Path;	//first:from/to, second:edge_no
 
 int		N,M,S,D,e[MAX_NUM_OF_E];
+int		dp[MAX_NUM_OF_V];
+bool	blocked[MAX_NUM_OF_E],reverse_visited[MAX_NUM_OF_V];
 
 bool	input(vector<Path>* connected,vector<Path>* reverse)
 {
@@ -37,8 +39,7 @@ bool	input(vector<Path>* connected,vector<Path>* reverse)
 	return	true;
 }
 
-void	find_shortest_path(vector<Path>* connected,
-						   vector<int>& dp,vector<bool>& blocked)
+void	find_shortest_path(vector<Path>* connected)
 {
 	priority_queue<State>	pq;
 	
@@ -75,11 +76,11 @@ void	find_shortest_path(vector<Path>* connected,
 	}
 }
 
-void	remove_edge(vector<Path>* reverse,
-					vector<int>& dp,vector<bool>& blocked)
+void	remove_edge(vector<Path>* reverse)
 {
 	priority_queue<State>	pq;
 	
+	reverse_visited[D] = true;
 	pq.push(make_pair(-dp[D],D));
 	
 	for(;!pq.empty();)
@@ -106,7 +107,12 @@ void	remove_edge(vector<Path>* reverse,
 			if( dp[adj_v] == current_cost-e[adj_e] )
 			{
 				blocked[adj_e] = true;
-				pq.push(make_pair(-dp[adj_v],adj_v));
+					
+				if( reverse_visited[adj_v] == false )
+				{
+					pq.push(make_pair(-dp[adj_v],adj_v));
+					reverse_visited[adj_v] = true;
+				}
 			}
 		}
 	}
@@ -127,16 +133,16 @@ int		main(void)
 			break;
 		}
 		
-		vector<int>		dp(N,INF);
-		vector<bool>	blocked(M+1,false);
+		fill(&dp[0],&dp[N],INF);
+		fill(&blocked[1],&blocked[M+1],false);
 		
-		find_shortest_path(connected,dp,blocked);
-		remove_edge(reverse,dp,blocked);
+		find_shortest_path(connected);
 		
-		dp.clear();
-		dp.resize(N,INF);
+		fill(&reverse_visited[0],&reverse_visited[N],false);
+		remove_edge(reverse);
 		
-		find_shortest_path(connected,dp,blocked);
+		fill(&dp[0],&dp[N],INF);
+		find_shortest_path(connected);
 		
 		if( dp[D] == INF )
 		{
