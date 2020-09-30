@@ -12,6 +12,7 @@ typedef	long long int	int64;
 
 int		N,M,K;
 int64	dp[MAX_SIZE][MAX_PAVE];
+bool	visited[MAX_SIZE][MAX_PAVE];
 
 typedef	pair<int,int>		Path;		// first:city,second:num_of_paved_road
 typedef	pair<int64,Path>	State;		// first:-time,second:Path
@@ -35,11 +36,10 @@ void	input(void)
 		connected[c2].push_back(make_pair(c1,t));
 	}
 	
-	for(int i=2;i<=N;i++)
+	for(int i=1;i<=N;i++)
 	{
 		fill(&dp[i][0],&dp[i][K+1],INF);
 	}
-	fill(&dp[1][0],&dp[1][K+1],0);
 }
 
 int64	find_best_path(void)
@@ -48,6 +48,8 @@ int64	find_best_path(void)
 	
 	ret = INF;
 	pq.push(make_pair(0,make_pair(1,0)));
+	
+	fill(&dp[1][0],&dp[1][K+1],0);
 	
 	for(;!pq.empty();)
 	{
@@ -60,10 +62,12 @@ int64	find_best_path(void)
 		
 		pq.pop();
 		
-		if( current_city == N )
+		if( current_city==N || visited[current_city][current_pave]==true )
 		{
 			continue;
 		}
+		
+		visited[current_city][current_pave] = true;
 		
 		vector<Connected>&	adj = connected[current_city];
 		
