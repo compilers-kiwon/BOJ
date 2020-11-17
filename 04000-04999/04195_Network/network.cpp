@@ -4,14 +4,28 @@
 using namespace	std;
 
 #define	MAX_ROW	0x100
-#define	MAX_COL	(20+1)
+#define	MAX_COL	100
 
 typedef	pair<string,int>	Friend;		// first:name, second:index
 typedef	pair<int,int>		Relation;	// first:index, second:index
 
+int		get_second_idx(const string& name)
+{
+	int	ret;
+	
+	ret = 0;
+	
+	for(int i=0;i<name.length();i++)
+	{
+		ret += (int)name[i];
+	}
+	
+	return	(ret%MAX_COL);
+}
+
 int		get_index(int& cnt,vector<Friend> t[][MAX_COL],string& name)
 {
-	vector<Friend>&				f = t[name[0]][name.length()];
+	vector<Friend>&				f = t[name[0]][get_second_idx(name)];
 	vector<Friend>::iterator	it;
 	
 	int	ret;
