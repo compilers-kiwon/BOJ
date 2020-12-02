@@ -1,4 +1,5 @@
 #include	<iostream>
+#include	<map>
 
 using namespace	std;
 
@@ -7,7 +8,8 @@ using namespace	std;
 #define	RIGHT_DOWN	0
 #define	LEFT_UP		1
 
-int	number[MAX_SIZE][MAX_SIZE];
+typedef	struct{map<int,int> m;}	Data;
+map<int,Data>	number;
 
 void	init(void)
 {
@@ -17,7 +19,7 @@ void	init(void)
 	{
 		if( x<MAX_SIZE && y<MAX_SIZE )
 		{
-			number[y][x] = n;
+			number[y].m[x] = n;
 		}
 		
 		if( n%2 == 0 )
@@ -65,9 +67,9 @@ int		main(void)
 		}
 		else
 		{
-			if( number[y][x] != 0 )
+			if( number[y].m[x] != 0 )
 			{
-				cout<<number[y][x]<<'\n';
+				cout<<number[y].m[x]<<'\n';
 			}
 			else
 			{
