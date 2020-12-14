@@ -5,12 +5,14 @@
 using namespace	std;
 
 #define	MAX_NUM_OF_REPAIR	100
+#define	INF					0x100000000L
 
-typedef	pair<int,int>	State;
+typedef	long long int	int64;
+typedef	pair<int64,int>	State;	// first:-time,second:pos
 
-int	max_distance_to_go,num_of_repair_shop;
-int	distance_from_start[MAX_NUM_OF_REPAIR+2],repair_time[MAX_NUM_OF_REPAIR+2];
-int	prev_repair_shop[MAX_NUM_OF_REPAIR+2];
+int64	max_distance_to_go;
+int64	distance_from_start[MAX_NUM_OF_REPAIR+2],repair_time[MAX_NUM_OF_REPAIR+2];
+int		num_of_repair_shop,prev_repair_shop[MAX_NUM_OF_REPAIR+2];
 
 vector<int>	connected[MAX_NUM_OF_REPAIR+1];
 
@@ -22,7 +24,7 @@ void	init(void)
 	
 	for(int i=1;i<=num_of_repair_shop+1;i++)
 	{
-		int	d;
+		int64	d;
 		
 		cin>>d;
 		distance_from_start[i] = distance_from_start[i-1]+d;
@@ -50,17 +52,18 @@ void	build_graph(void)
 	}
 }
 
-int		find_min_time_to_repair(void)
+int64	find_min_time_to_repair(void)
 {
 	priority_queue<State>	rq;
-	vector<int>				dp(num_of_repair_shop+2,0x7FFFFFFF);
+	vector<int64>			dp(num_of_repair_shop+2,INF);
 	
 	dp[0] = 0;
 	rq.push(make_pair(0,0));
 	
 	while( !rq.empty() )
 	{
-		int	current_spent_time_for_repair,current_repair_shop;
+		int64	current_spent_time_for_repair;
+		int		current_repair_shop;
 		
 		current_spent_time_for_repair = -rq.top().first;
 		current_repair_shop = rq.top().second;
@@ -76,7 +79,7 @@ int		find_min_time_to_repair(void)
 		
 		for(int i=0;i<adj_repair_shops.size();i++)
 		{
-			int	adj_repair_time;
+			int64	adj_repair_time;
 			
 			adj_repair_time = current_spent_time_for_repair+repair_time[adj_repair_shops[i]];
 			
@@ -101,7 +104,7 @@ int		main(void)
 	
 	min_spent_time = find_min_time_to_repair();
 	
-	if( min_spent_time==0 || min_spent_time==0x7FFFFFFF )
+	if( min_spent_time==0 || min_spent_time==INF )
 	{
 		cout<<"0\n0\n";
 	}
