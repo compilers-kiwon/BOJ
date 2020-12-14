@@ -1,152 +1,158 @@
 #include	<iostream>
-#include	<vector>
+#include	<string>
 #include	<queue>
+#include	<vector>
 
 using namespace	std;
 
-#define	MAX_NUM_OF_V	20
-#define	char2int(c)		((int)((c)-'0'))
+#define	MAX_SIZE	20
+#define	NONE		0
 
-#define	START	0
-#define	END		1
+#define	START_NODE	0
+#define	END_NODE	1
 
-typedef	struct	_GRAPH_INFO	Graph;
-struct	_GRAPH_INFO
+#define	char2int(c)	((int)((c)-'0'))
+
+typedef	pair<int,int>	Weight;
+
+int		N,dp[1<<MAX_SIZE][MAX_SIZE];
+Weight	connected[MAX_SIZE][MAX_SIZE];
+
+typedef	pair<pair<int,int>,Weight>	Visited;		// first:<all,last>,second:Wegiht
+typedef	pair<int,Visited>			State;			// first:-cost,second:Visited
+
+vector<int>	adj[MAX_SIZE];
+
+void	input(void)
 {
-	int	to,w1,w2;
-};
-
-typedef	pair<int,int>		Weight;	// first:w1_sum, second:w2_sum
-typedef	pair<int,Weight>	Vertex;	// first:vertex, second:Weight
-typedef	pair<int,Vertex>	State;	// first:-cost, second:Vertex
-
-int				N,w1[MAX_NUM_OF_V][MAX_NUM_OF_V],w2[MAX_NUM_OF_V][MAX_NUM_OF_V];
-vector<Graph>	connected[MAX_NUM_OF_V];
-
-void	init(void)
-{
-	char	buf[MAX_NUM_OF_V+1];
-	
-	scanf("%d",&N);
+	cin>>N;
 	
 	for(int i=0;i<N;i++)
 	{
-		scanf("%s",buf);
+		string	str;
+		
+		cin>>str;
 		
 		for(int j=0;j<N;j++)
 		{
-			if( buf[j] == '.' )
+			char&	c = str[j];
+			
+			if( c == '.' )
 			{
-				w1[i][j] = 0;
+				continue;
 			}
-			else
-			{
-				w1[i][j] = char2int(buf[j]);
-			}
+			
+			connected[i][j].first = char2int(c);
 		}
 	}
 	
 	for(int i=0;i<N;i++)
 	{
-		scanf("%s",buf);
+		string	str;
+		
+		cin>>str;
 		
 		for(int j=0;j<N;j++)
 		{
-			if( buf[j] == '.' )
+			char&	c = str[j];
+			
+			if( c == '.' )
 			{
-				w2[i][j] = 0;
+				continue;
 			}
-			else
-			{
-				w2[i][j] = char2int(buf[j]);
-			}
-		}
-	}
-	
-	for(int i=0;i<N-1;i++)
-	{
-		for(int j=i+1;j<N;j++)
-		{
-			if( w1[i][j] != 0 )
-			{
-				Graph	v;
-				
-				v.w1 = w1[i][j];
-				v.w2 = w2[i][j];
-				
-				v.to = j;
-				connected[i].push_back(v);
-				
-				v.to = i;
-				connected[j].push_back(v);
-			}
+			
+			connected[i][j].second = char2int(c);
+			adj[i].push_back(j);
 		}
 	}
 }
 
-int		find_min_cost(void)
+int		bfs(void)
 {
-	priority_queue<State>	pq;
-	vector<int>				dp(N,0x7FFFFFFF);
-	int						min_cost;
+	priority_queue<State>	state_q;
+	Visited					v;
+	int						ret;
 	
-	dp[START] = 0;
-	min_cost = 0x7FFFFFFF;
-	pq.push(make_pair(0,make_pair(START,make_pair(0,0))));
+	v.first.first = (1<<START_NODE);
+	v.first.second = START_NODE;
+	v.second = make_pair(0,0);
 	
-	while( !pq.empty() )
+	ret = 0x7FFFFFFF;
+	state_q.push(make_pair(0,v));
+	
+	for(;!state_q.empty();)
 	{
-		int	current_cost,current_v,sum_of_w1,sum_of_w2;
+		int		current_cost;
+		int		all_visited,last_visited;
+		Weight	current_weight;
 		
-		current_cost = -pq.top().first;
-		current_v = pq.top().second.first;
-		sum_of_w1 = pq.top().second.second.first;
-		sum_of_w2 = pq.top().second.second.second;
+		current_cost = -state_q.top().first;
+		current_weight = state_q.top().second.second;
 		
-		pq.pop();
+		all_visited = state_q.top().second.first.first;
+		last_visited = state_q.top().second.first.second;
 		
-		if( current_v == END )
+		state_q.pop();
+		
+		if( last_visited == END_NODE )
 		{
-			min_cost = current_cost;
+			ret = current_cost;
 			break;
 		}
 		
-		vector<Graph>&	adj_vec = connected[current_v];
-		
-		for(int i=0;i<adj_vec.size();i++)
+		for(int i=0;i<adj[last_visited].size();i++)
 		{
-			Graph&	adj_v = adj_vec[i];
-			int		adj_sum_of_w1,adj_sum_of_w2,adj_cost;
+			int&	node_idx = adj[last_visited][i];			
+			int		adj_node,adj_cost;
 			
-			adj_sum_of_w1 = sum_of_w1+adj_v.w1;
-			adj_sum_of_w2 = sum_of_w2+adj_v.w2;
-			adj_cost = adj_sum_of_w1*adj_sum_of_w2;
+			adj_node = (1<<node_idx);
 			
-			if( adj_cost < dp[adj_v.to] )
+			if( (all_visited&adj_node)==0 && 
+				connected[last_visited][node_idx]!=make_pair(0,0) )
 			{
-				dp[adj_v.to] = adj_cost;
-				pq.push(make_pair(-adj_cost,make_pair(adj_v.to,make_pair(adj_sum_of_w1,adj_sum_of_w2))));
+				int&	w1 = current_weight.first;
+				int&	w2 = current_weight.second;
+
+				v.first.first = all_visited|adj_node;
+				v.first.second = node_idx;
+				
+				Weight&	tmp = v.second;
+				
+				tmp = make_pair(w1+connected[last_visited][node_idx].first,
+									w2+connected[last_visited][node_idx].second);
+				
+				if( dp[v.first.first][v.first.second] == NONE ||
+					tmp.first*tmp.second < dp[v.first.first][v.first.second] )
+				{
+					dp[v.first.first][v.first.second] = tmp.first*tmp.second;
+					state_q.push(make_pair(-dp[v.first.first][v.first.second],v));
+				}
 			}
 		}
 	}
 	
-	return	min_cost;
+	return	ret;
 }
 
 int		main(void)
 {
+	cin.tie(NULL);
+	cin.sync_with_stdio(false);
+	
+	input();
+		
 	int	min_cost;
 	
-	init();
-	
-	min_cost = find_min_cost();
+	min_cost = bfs();
 	
 	if( min_cost == 0x7FFFFFFF )
 	{
-		min_cost = -1;
+		cout<<"-1\n";
 	}
-	
-	printf("%d\n",min_cost);
+	else
+	{
+		cout<<min_cost<<'\n';
+	}
 	
 	return	0;
 }
