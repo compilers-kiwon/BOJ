@@ -6,9 +6,10 @@ using namespace	std;
 
 typedef	unsigned long long	uint64;
 
-int		N,K,kettle[MAX_NUM_OF_KETTLE];
+int		N;
+uint64	K,kettle[MAX_NUM_OF_KETTLE];
 
-void	input(int& max_kettle)
+void	input(uint64& max_kettle)
 {
 	cin>>N>>K;
 	
@@ -21,22 +22,22 @@ void	input(int& max_kettle)
 	}
 }
 
-uint64	get_cnt(int n)
+uint64	get_cnt(uint64 n)
 {
 	uint64	cnt;
 	int		i;
 	
 	for(i=1,cnt=0;i<=N;i++)
 	{
-		cnt += (uint64)(kettle[i]/n);
+		cnt += kettle[i]/n;
 	}
 	
 	return	cnt;
 }
 
-int		bin_search(int lo,int hi)
+uint64	bin_search(uint64 lo,uint64 hi)
 {
-	int	mid,cnt;
+	uint64	mid,cnt;
 	
 	while(lo+1<hi)
 	{
@@ -58,10 +59,10 @@ int		bin_search(int lo,int hi)
 
 int		main(void)
 {
-	int	max_kettle;
+	uint64	max_kettle;
 	
 	input(max_kettle);
-	cout<<bin_search(1,max_kettle)<<endl;
+	cout<<bin_search(1,max_kettle+1)<<'\n';
 	
 	return	0;
 }
