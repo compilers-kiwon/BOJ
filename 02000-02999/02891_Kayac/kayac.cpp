@@ -65,7 +65,8 @@ void	play_game(int team_index,int& min_num)
 			// right
 			adj_team_index = team_index+1;
 			
-			if( adj_team_index <= N && team[adj_team_index].first == true )
+			if( adj_team_index <= N && team[adj_team_index].first == true 
+				&& team[adj_team_index].second == true )
 			{
 				team[adj_team_index].first = false;
 				team[team_index].second = true;
