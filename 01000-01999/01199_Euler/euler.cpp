@@ -5,7 +5,7 @@ using namespace	std;
 #define	MAX_SIZE	(1000+1)
 #define	NONE		0
 
-int	N,graph[MAX_SIZE][MAX_SIZE];
+int	N,graph[MAX_SIZE][MAX_SIZE],current[MAX_SIZE];
 
 bool	input(void)
 {
@@ -30,7 +30,7 @@ bool	input(void)
 
 void	dfs(int v)
 {
-	for(int adj=1;adj<=N;adj++)
+	for(int& adj=current[v];adj<=N;adj++)
 	{
 		if( graph[v][adj] != NONE )
 		{
@@ -38,6 +38,7 @@ void	dfs(int v)
 			dfs(adj);
 		}
 	}
+
 	cout<<v<<' ';
 }
 
@@ -52,6 +53,11 @@ int		main(void)
 		return	0;
 	}
 	
+	for(int i=1;i<=N;i++)
+	{
+		current[i] = 1;
+	}
+
 	dfs(1);
 	
 	return	0;
