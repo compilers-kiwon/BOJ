@@ -10,7 +10,89 @@ typedef	pair<int,int>	Pos;	// first:row,second:col
 
 int		grid[MAX_SIZE+1][MAX_SIZE+1];
 
-void	input(vector<Pos>& empty,vector<int> candidate[][MAX_SIZE+1])
+bool	is_valid(void)
+{
+	bool	visited[MAX_SIZE+1];
+
+	// 3x3
+	for(int s_row=1;s_row<=MAX_SIZE;s_row+=3)
+	{
+		for(int s_col=1;s_col<=MAX_SIZE;s_col+=3)
+		{
+			fill(&visited[1],&visited[MAX_SIZE+1],false);
+
+			for(int row=s_row;row<s_row+3;row++)
+			{
+				for(int col=s_col;col<s_col+3;col++)
+				{
+					int&	n = grid[row][col];
+
+					if( n == EMPTY )
+					{
+						continue;
+					}
+
+					if( visited[n] == true )
+					{
+						return	false;
+					}
+
+					visited[n] = true;
+				}
+			}
+		}
+	}
+
+	// Virt
+	for(int col=1;col<=MAX_SIZE;col++)
+	{
+		fill(&visited[1],&visited[MAX_SIZE+1],false);
+
+		for(int row=1;row<=MAX_SIZE;row++)
+		{
+			int&	n = grid[row][col];
+
+			if( n == EMPTY )
+			{
+				continue;
+			}
+
+			if( visited[n] == true )
+			{
+				return	false;
+			}
+
+			visited[n] = true;
+		}
+	}
+
+	// Hori
+	for(int row=1;row<=MAX_SIZE;row++)
+	{
+		fill(&visited[1],&visited[MAX_SIZE+1],false);
+
+		for(int col=1;col<=MAX_SIZE;col++)
+		{
+			int&	n = grid[row][col];
+
+			if( n == EMPTY )
+			{
+				continue;
+			}
+
+			if( visited[n] == true )
+			{
+				return	false;
+			}
+
+			visited[n] = true;
+		}
+	}
+
+	return	true;
+}
+
+bool	input(vector<Pos>& empty)
 {
 	for(int row=1;row<=MAX_SIZE;row++)
 	{
@@ -18,6 +100,11 @@ void	input(vector<Pos>& empty,vector<int> candidate[][MAX_SIZE+1])
 			  &grid[row][4],&grid[row][5],&grid[row][6],&grid[row][7],&grid[row][8],&grid[row][9]);
 	}
 	
+	if( !is_valid() )
+	{
+		return	false;
+	}
+
 	for(int row=1;row<=MAX_SIZE;row++)
 	{
 		for(int col=1;col<=MAX_SIZE;col++)
@@ -25,64 +112,28 @@ void	input(vector<Pos>& empty,vector<int> candidate[][MAX_SIZE+1])
 			if( grid[row][col] == EMPTY )
 			{
 				empty.push_back(make_pair(row,col));
-				
-				vector<bool>	used_in_row(MAX_SIZE+1,false),used_in_col(MAX_SIZE+1,false);
-				
-				for(int i=1;i<=MAX_SIZE;i++)
-				{
-					used_in_col[grid[i][col]] = used_in_row[grid[row][i]] = true;
-				}
-				
-				for(int i=1;i<=MAX_SIZE;i++)
-				{
-					if( used_in_col[i]==false && used_in_row[i]==false )
-					{
-						candidate[row][col].push_back(i);
-					}
-				}
 			}
 		}
 	}
+
+	return	true;
 }
 
-bool	dfs(vector<Pos>& empty,int ptr,vector<int> candidate[][MAX_SIZE+1])
+bool	dfs(vector<Pos>& empty,int ptr)
 {
 	if( ptr == empty.size() )
 	{
-		bool	flag;
-		
-		flag = true;
-		
-		for(int i=0;i<empty.size();i++)
-		{
-			int&			row = empty[i].first;
-			int&			col = empty[i].second;
-			vector<bool>	used_in_row(MAX_SIZE+1,false);
-			vector<bool>	used_in_col(MAX_SIZE+1,false);
-			
-			for(int j=1;j<=MAX_SIZE;j++)
-			{
-				if( used_in_col[grid[j][col]]==true || used_in_row[grid[row][j]]==true )
-				{
-					return	false;
-				}
-				
-				used_in_col[grid[j][col]] = used_in_row[grid[row][j]] = true;
-			}
-		}
-		
-		return	true;
+		return	is_valid();
 	}
 	
-	int&			row = empty[ptr].first;
-	int&			col = empty[ptr].second;
-	vector<int>&	c = candidate[row][col];
+	int&	row = empty[ptr].first;
+	int&	col = empty[ptr].second;
 	
-	for(int i=0;i<c.size();i++)
+	for(int i=1;i<=MAX_SIZE;i++)
 	{
-		grid[row][col] = c[i];
-		
-		if( dfs(empty,ptr+1,candidate) == true )
+		grid[row][col] = i;
+
+		if( dfs(empty,ptr+1) == true )
 		{
 			return	true;
 		}
@@ -100,16 +151,18 @@ int		main(void)
 	for(int i=1;i<=n;i++)
 	{
 		vector<Pos>	empty;
-		vector<int>	candidate[MAX_SIZE+1][MAX_SIZE+1];
-		
-		input(empty,candidate);
-		
+				
 		if( i != 1 )
 		{
 			puts("");
 		}
-		
-		if( dfs(empty,0,candidate) == true )
+
+		if( input(empty)==false || dfs(empty,0)==false )
+		{
+			puts("Could not complete this grid.");
+			continue;
+		}
+		else
 		{
 			for(int row=1;row<=MAX_SIZE;row++)
 			{
@@ -119,10 +172,6 @@ int		main(void)
 				}
 				puts("");
 			}
-		}
-		else
-		{
-			puts("Could not complete this grid.");
 		}
 	}
 	
