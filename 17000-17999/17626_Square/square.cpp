@@ -19,7 +19,7 @@ void    build_cnt_table(void)
 
     for(int i=0;i<square[1].size();i++)
     {
-        for(int j=i+1;j<square[1].size();j++)
+        for(int j=i;j<square[1].size();j++)
         {
             int n = square[1][i]+square[1][j];
 
