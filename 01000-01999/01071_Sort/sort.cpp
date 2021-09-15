@@ -40,13 +40,7 @@ void    sort(void)
 
         int current = it->first;
 
-        if( it->second == 0 )
-        {
-            num.erase(current);
-            continue;
-        }
-        
-        if( num[current+1] == 0 )
+        if( num.find(current+1) == num.end() )
         {
             write_output(current,num[current]);
             num.erase(current);
