@@ -3,7 +3,7 @@
 using namespace	std;
 
 #define	MAX_NUM_OF_V	(400+1)
-#define	MAX_DISTANCE	4000000
+#define	MAX_DISTANCE	4000001
 
 int	d[MAX_NUM_OF_V][MAX_NUM_OF_V];
 
