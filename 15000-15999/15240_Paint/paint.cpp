@@ -40,6 +40,12 @@ void	fill(void)
 	char			init_color;
 	
 	init_color = image[Y][X];
+    
+    if( init_color == K )
+    {
+        return;
+    }
+    
 	image[Y][X] = K;
 	pixel.push(make_pair(Y,X));
 	
