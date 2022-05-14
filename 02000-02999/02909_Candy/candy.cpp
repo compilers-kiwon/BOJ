@@ -8,6 +8,12 @@ int	main(void)
 	
 	cin>>C>>K;
 	
+	if( K == 0 )
+	{
+		cout<<C<<'\n';
+		return	0;
+	}
+	
 	for(n=1,i=1;i<=K;i++)
 	{
 		n *= 10;
