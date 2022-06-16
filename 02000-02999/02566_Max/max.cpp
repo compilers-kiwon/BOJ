@@ -8,7 +8,7 @@ int	main(void)
 {
 	int	max_n,max_row,max_col;
 	
-	max_n = 0;
+	max_n = -1;
 	
 	for(int i=1;i<=SIZE;i++)
 	{
