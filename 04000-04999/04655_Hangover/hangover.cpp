@@ -8,11 +8,13 @@ float   card_len[MAX_NUM_OF_CARDS+1];
 
 void    init(void)
 {
+    card_len[0] = 0.0;
+    
     for(int i=1;i<=MAX_NUM_OF_CARDS;i++)
     {
         float   prev_len = card_len[i-1];
 
-        card_len[i] = prev_len+(1.0/(float)(i+1));
+        card_len[i] = prev_len+(1.0f/(i+1));
     }
 }
 
