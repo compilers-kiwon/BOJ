@@ -6,7 +6,10 @@ using namespace std;
 #define MAX_SIZE    (100+1)
 #define MAX_DIR     4
 
-typedef pair<int,int>   Pos;
+#define NONE        0
+#define NOT_VISITED -1
+
+typedef pair<int,int>   Pos;    // first:row,second:col
 
 int     H,W,O,F,Xs,Ys,Xe,Ye;
 int     grid[MAX_SIZE][MAX_SIZE];
@@ -24,8 +27,8 @@ void    init(void)
 {
     for(int row=1;row<=H;row++)
     {
-        fill(&grid[row][1],&grid[row][W+1],0);
-        fill(&dp[row][1],&dp[row][W+1],-1);
+        fill(&grid[row][1],&grid[row][W+1],NONE);
+        fill(&dp[row][1],&dp[row][W+1],NOT_VISITED);
         fill(&is_queued[row][1],&is_queued[row][W+1],false);
     }
 }
