@@ -4,6 +4,8 @@ using namespace std;
 
 #define MAX_SIZE    (50+1)
 
+#define get_wasted_space(total,used)    ((total)-(used))
+
 int N,M,A[MAX_SIZE],B[MAX_SIZE];
 
 void    input(void)
@@ -34,23 +36,26 @@ int     simulate(void)
         }
         else
         {
-            ret += A[box]-current;
+            ret += get_wasted_space(A[box],current);
             box++;current=0;
         }
     }
 
-    ret += A[box]-current;
+    ret += get_wasted_space(A[box],current);
 
     for(box++;box<=N;box++)
     {
         ret += A[box];
     }
-    
+
     return  ret;
 }
 
 int     main(void)
 {
+    cin.tie(NULL);
+    cin.sync_with_stdio(false);
+    
     input();
     cout<<simulate()<<'\n';
 
