@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define WINDOW_SIZE 4
+
 #define get_idx(s,o,size)   (((s)+(o))%(size))
 
 typedef long long int   int64;
@@ -24,10 +26,10 @@ int input(vector<Cow>& v,vector<int>& q)
 
         cin>>c.value;
 
-        c.related.push_back(get_idx(i,0,N));
-        c.related.push_back(get_idx(i,1,N));
-        c.related.push_back(get_idx(i,2,N));
-        c.related.push_back(get_idx(i,3,N));
+        for(int offset=0;offset<WINDOW_SIZE;offset++)
+        {
+            c.related.push_back(get_idx(i,offset,N));
+        }
 
         v.push_back(c);
     }
@@ -51,7 +53,7 @@ int64   get_sum(const vector<Cow>& c,vector<int64>& sum)
 
     for(int i=0;i<c.size();i++)
     {
-        for(int j=0;j<4;j++)
+        for(int j=0;j<WINDOW_SIZE;j++)
         {
             sum[c[i].related[j]] *= c[i].value;
         }
@@ -69,13 +71,13 @@ int64 do_query(int idx,vector<Cow>& c,vector<int64>& sum,int64 s)
 {
     int64   ret = s;
 
-    for(int i=0;i<4;i++)
+    for(int i=0;i<WINDOW_SIZE;i++)
     {
         int64   from = sum[c[idx].related[i]];
         int64   to = -sum[c[idx].related[i]];
         
         ret += to-from;
-        sum[c[idx].related[i]] *= -1;
+        sum[c[idx].related[i]] = to;
     }
 
     return  ret;
