@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define get_ratio(R,A)  ((((R)*10000)/(A)+5)/10)
+
 int input(string& str)
 {
     for(string s;;str+=s)
@@ -12,11 +14,6 @@ int input(string& str)
     }
 
     return  0;
-}
-
-int calculate(int recognized,int total)
-{
-    return  ((recognized*10000)/total+5)/10;
 }
 
 int count_recognized(const string& str)
@@ -43,7 +40,7 @@ int main(void)
         int     ratio;
 
         input(str);
-        ratio = calculate(count_recognized(str),str.length());
+        ratio = get_ratio(count_recognized(str),str.length());
 
         cout<<"Efficiency ratio is "<<ratio/10;
         if(ratio%10!=0) cout<<'.'<<ratio%10;
