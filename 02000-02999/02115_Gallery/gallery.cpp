@@ -59,7 +59,7 @@ int can_be_displayed(int current_row,int current_col,int display_dir)
 
     occupied[current_row][current_col][display_dir]
             = occupied[adj_row][adj_col][display_dir] = true;
-    //cout<<current_row<<' '<<current_col<<' '<<adj_row<<' '<<adj_col<<' '<<display_dir<<'\n';
+    
     return  TRUE;
 }
 
