@@ -11,22 +11,6 @@ using namespace std;
 #define is_upper(c)     IN_RANGE('A',(c),'Z')
 #define is_lower(c)     IN_RANGE('a',(c),'z')
 
-typedef long long int   int64;
-
-#define char2int64(c)   ((int64)((c)-'0'))
-
-int64   str2int64(string str)
-{
-    int64   ret = 0;
-
-    for(int i=0;i<str.length();i++)
-    {
-        ret = ret*10+char2int64(str[i]);
-    }
-
-    return  ret;
-}
-
 string  get_number(const string& str,int& pos)
 {
     string  ret;
@@ -86,7 +70,7 @@ bool    is_less(const string& str1,const string& str2)
             {
                 return  (num1.length()<num2.length());
             }
-            
+
             if( num1 != num2 )
             {
                 return  (num1<num2);
