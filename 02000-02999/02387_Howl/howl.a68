@@ -1,0 +1,11 @@
+print(("                     .",newline));
+print(("                    / V\",newline));
+print(("                  / `  /",newline));
+print(("                 <<   |",newline));
+print(("                 /    |",newline));
+print(("               /      |",newline));
+print(("             /        |",newline));
+print(("           /    \  \ /",newline));
+print(("          (      ) | |",newline));
+print(("  ________|   _/_  | |",newline));
+print(("<__________\______)\__)",newline))
