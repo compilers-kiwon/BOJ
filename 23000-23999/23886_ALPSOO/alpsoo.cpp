@@ -5,6 +5,7 @@
 
 using namespace std;
 
+#define FLAT    0
 #define get_sign(n) ((n)/abs((n)))
 
 int get_inclination(const string& num,
@@ -27,7 +28,7 @@ bool    is_alpsoo(const vector<int>& inc)
 
     for(int i=1;i<inc.size();i++)
     {
-        if( inc[i] == 0 )
+        if( inc[i] == FLAT )
         {
             return  false;
         }
@@ -55,6 +56,6 @@ int main(void)
 
     cout<<(is_alpsoo(inc)?
         "ALPSOO":"NON ALPSOO")<<'\n';
-        
+
     return  0;
 }
