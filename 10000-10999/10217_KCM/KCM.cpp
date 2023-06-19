@@ -1,134 +1,103 @@
 #include	<iostream>
 #include	<vector>
-#include	<queue>
+#include	<cstring>
 
 using namespace	std;
 
-#define	MAX_NUM_OF_AIRPORT	(100+1)
+#define	MAX_NUM_OF_AIRPORTS	(100+1)
 #define	MAX_COST			(10000+1)
 
-typedef	struct	_PATH_INFO	Path;
-struct	_PATH_INFO
+static int	N,M,K;
+static int	dp[MAX_NUM_OF_AIRPORTS][MAX_COST];
+
+typedef	struct{int from,cost,time;}	Path;
+
+static vector<Path>	connected[MAX_NUM_OF_AIRPORTS];
+
+#define	TBD	-1
+#define	INF	0x10000000
+
+int	input(void)
 {
-	int	airport,cost,time;
-};
+	cin>>N>>M>>K;
 
-typedef	pair<int,int>			Airport_Cost;
-typedef	pair<int,Airport_Cost>	Time;
-
-int	N,M,K;
-int	visited[MAX_NUM_OF_AIRPORT][MAX_COST];
-
-void	init(vector<Path>* connected)
-{
-	scanf("%d %d %d",&N,&M,&K);
-	
 	for(int i=1;i<=K;i++)
 	{
-		int		u,v,c,d;
-		Path	p;
-		
-		scanf("%d %d %d %d",&u,&v,&c,&d);
-		
-		p.airport = v;
-		p.cost = c;
-		p.time = d;
-		
-		connected[u].push_back(p);
+		int	u,v,c,d;
+
+		cin>>u>>v>>c>>d;
+		connected[v].push_back({u,c,d});
 	}
+
+	return	0;
 }
 
-int		get_min_time(vector<Path>* connected)
+int	get_dp(int cur_airport,int available_buget)
 {
-	int						min_time;
-	priority_queue<Time>	ap_q;
-	Time					t;
-	
-	t.first = 0;
-	t.second.first = 1;
-	t.second.second = 0;
-	
-	ap_q.push(t);
-	
-	min_time = 0x7FFFFFFF;
-	
-	while( ap_q.size() != 0 )
+	if( cur_airport == 1 )
 	{
-		int	current_airport,current_cost,current_time;
-		
-		current_airport = ap_q.top().second.first;
-		current_cost = ap_q.top().second.second;
-		current_time = -(ap_q.top().first);
-		
-		ap_q.pop();
-		
-		if( current_airport == N )
+		return	0;
+	}
+
+	int&	ret = dp[cur_airport][available_buget];
+
+	if( ret != TBD )
+	{
+		return	ret;
+	}
+
+	ret = INF;
+
+	for(int i=0;i<connected[cur_airport].size();i++)
+	{
+		Path&	p = connected[cur_airport][i];
+
+		if( p.cost <= available_buget )
 		{
-			min_time = min(min_time,current_time);
-			continue;
-		}
-		
-		vector<Path>&	to = connected[current_airport];
-		
-		for(int i=0;i<to.size();i++)
-		{
-			int	next_airport,next_cost,next_time;
-			
-			next_airport = to[i].airport;
-			next_cost = current_cost+to[i].cost;
-			next_time = current_time+to[i].time;
-			
-			if( next_cost <= M && next_time < visited[next_airport][next_cost] )
-			{
-				t.first = -next_time;
-				t.second.first = next_airport;
-				t.second.second = next_cost;
-				
-				ap_q.push(t);
-				
-				visited[next_airport][next_cost] = next_time;
-			}
+			ret = min(ret,get_dp(p.from,available_buget-p.cost)+p.time);
 		}
 	}
-	
-	return	min_time;
+
+	return	ret;
 }
 
-int		main(void)
+int	init(void)
 {
+	memset(dp,TBD,sizeof(dp));
+	for(int i=1;i<=MAX_NUM_OF_AIRPORTS;i++) connected[i].clear();
+	return	0;
+}
+
+int	main(void)
+{
+	cin.tie(NULL);
+	cin.sync_with_stdio(false);
+
 	int	T;
-	
+
 	cin>>T;
-	
-	while(T>0)
+
+	for(int t=1;t<=T;t++)
 	{
-		vector<Path>	connected[MAX_NUM_OF_AIRPORT];
-		
-		init(connected);
-		
-		for(int i=1;i<=N;i++)
+		init();
+		input();
+
+		int	min_time = INF;
+
+		for(int buget=0;buget<=M;buget++)
 		{
-			for(int j=1;j<=M;j++)
-			{
-				visited[i][j] = 0x7FFFFFFF;
-			}
+			min_time = min(min_time,get_dp(N,buget));
 		}
-		
-		int	min_time;
-		
-		min_time = get_min_time(connected);
-		
-		if( min_time == 0x7FFFFFFF )
+
+		if( min_time == INF )
 		{
-			puts("Poor KCM");
+			cout<<"Poor KCM\n";
 		}
 		else
 		{
-			printf("%d\n",min_time);
+			cout<<min_time<<'\n';
 		}
-		
-		T--;
 	}
-	
+
 	return	0;
 }
