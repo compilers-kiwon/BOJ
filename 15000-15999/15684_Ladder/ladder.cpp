@@ -2,119 +2,110 @@
 
 using namespace	std;
 
-#define	MAX_SIZE			(30+1)
-#define	MAX_NUM_OF_TRIAL	3
+#define	MAX_ROW		(30+1)
+#define	MAX_COL		(10+1)
 
-typedef	pair<bool,bool>	Ladder;
+static int	N,H,M;
+static bool	ladder[MAX_ROW][MAX_COL];
 
-#define	left	first
-#define	right	second
+#define	can_go_right(row,col)	(ladder[(row)][(col)]==true)
+#define	can_go_left(row,col)	(ladder[(row)][(col)-1]==true)
 
-Ladder	ladder[MAX_SIZE][MAX_SIZE];
-int		N,M,H;
+#define	TRUE	1
+#define	FALSE	0
 
-void	init(void)
+#define	MAX_NUM_OF_NEW_LADDERS	3
+#define	IMPOSSIBLE				-1
+
+int	input(void)
 {
-	cin.sync_with_stdio(false);
-	
 	cin>>N>>M>>H;
-	
+
 	for(int i=1;i<=M;i++)
 	{
 		int	a,b;
-		
+
 		cin>>a>>b;
-		ladder[a][b].right = ladder[a][b+1].left = true;
+		ladder[a][b] = true;
 	}
+
+	return	0;
 }
 
-int		go_ladder(int row,int col)
+int	go_ladder(int col)
 {
-	if( row > H )
+	int	cur = col;
+
+	for(int row=1;row<=H;row++)
 	{
-		return	col;
-	}
-	
-	int	next_row,next_col;
-	
-	next_row = row+1;
-	
-	if( ladder[row][col].left == false && ladder[row][col].right == false )
-	{
-		next_col = col;
-	}
-	else
-	{
-		if( ladder[row][col].left == true )
+		if( can_go_right(row,cur) )
 		{
-			next_col = col-1;
+			cur++;continue;
 		}
-		else
+		
+		if( can_go_left(row,cur) )
 		{
-			next_col = col+1;
+			cur--;continue;
 		}
 	}
 	
-	return	go_ladder(next_row,next_col);
+	return	cur;
 }
 
-bool	check_all_ladder(void)
+int	simulate(void)
 {
-	for(int i=1;i<=N;i++)
+	for(int col=1;col<=N;col++)
 	{
-		if( go_ladder(1,i) != i )
+		if( go_ladder(col) != col )
 		{
-			return	false;
+			return	FALSE;
 		}
 	}
-	
-	return	true;
+
+	return	TRUE;
 }
 
-bool	change_ladder(int cnt)
+int	dfs(int cnt)
 {
 	if( cnt == 0 )
 	{
-		return	check_all_ladder();
+		return	simulate();
 	}
-	
-	for(int i=1;i<=H;i++)
+
+	for(int col=1;col<N;col++)
 	{
-		for(int j=1;j<N;j++)
+		for(int row=1;row<=H;row++)
 		{
-			if( ladder[i][j].right == false && ladder[i][j].left == false && ladder[i][j+1].right == false )
+			if( ladder[row][col] || ladder[row][col-1] || ladder[row][col+1] )
 			{
-				ladder[i][j].right = ladder[i][j+1].left = true;
-				
-				if( change_ladder(cnt-1) == true )
-				{
-					return	true;
-				}
-				
-				ladder[i][j].right = ladder[i][j+1].left = false;
+				continue;
 			}
+
+			ladder[row][col] = true;
+			if(dfs(cnt-1)) return TRUE;
+			ladder[row][col] = false;
+
+			for(;!ladder[row][col-1]&&!ladder[row][col+1];row++);
 		}
 	}
-	
-	return	false;
+
+	return	FALSE;
 }
 
-int		main(void)
+int	main(void)
 {
-	init();
-	
-	int	result,cnt;
-	
-	for(cnt=0,result=-1;cnt<=MAX_NUM_OF_TRIAL;cnt++)
+	cin.tie(NULL);
+	cin.sync_with_stdio(false);
+
+	input();
+
+	int	cnt;
+
+	for(cnt=0;cnt<=MAX_NUM_OF_NEW_LADDERS;cnt++)
 	{
-		if( change_ladder(cnt) == true )
-		{
-			result = cnt;
-			break;
-		}
+		if(dfs(cnt)) break;
 	}
-	
-	cout<<result<<'\n';
-	
+
+	cout<<((cnt>MAX_NUM_OF_NEW_LADDERS)?IMPOSSIBLE:cnt)<<'\n';
 	return	0;
 }
