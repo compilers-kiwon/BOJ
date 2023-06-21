@@ -1,85 +1,80 @@
 #include	<iostream>
 #include	<vector>
+#include	<string>
 
 using namespace	std;
 
+#define	MAX_SIZE	3
+#define	get_idx(str)	((str)=="scissors"?0:(str)=="rock"?1:2)
+
+#define	WIN		1
+#define	LOOSE	-1
+#define	TIE		0
+
+/*
+				scissors	rock	paper
+			==============================	
+	scissors|	TIE			LOOSE	WIN
+	rock	|	WIN			TIE		LOOSE
+	paper	|	LOOSE		WIN		TIE
+*/
+const static int score[MAX_SIZE][MAX_SIZE] = {
+	{TIE,LOOSE,WIN},{WIN,TIE,LOOSE},{LOOSE,WIN,TIE}
+};
+
 int	main(void)
 {
-	while(1)
+	cin.tie(NULL);
+	cin.sync_with_stdio(false);
+
+	for(;;)
 	{
 		int	n,k;
 		
 		cin>>n;
-		
-		if( n == 0 )
-		{
-			break;
-		}
+		if(n==0) break;
 		cin>>k;
 		
-		vector<double>	win(n+1,0.0),loose(n+1,0.0);
+		vector<int>	win(n+1,0),loose(n+1,0);
 		
 		for(int i=1,to=k*n*(n-1)/2;i<=to;i++)
 		{
-			int		p1,p2;
+			int		p1,p2,result;
 			string	m1,m2;
 			
 			cin>>p1>>m1>>p2>>m2;
+			result = score[get_idx(m1)][get_idx(m2)];
 			
-			if( m1 == m2 )
+			switch(result)
 			{
-				continue;
-			}
-			
-			if( m1=="rock" )
-			{
-				if( m2=="paper" )
-				{
-					win[p2]++;loose[p1]++;
-				}
-				else
-				{
-					win[p1]++;loose[p2]++;
-				}
-			}
-			
-			if( m1=="paper" )
-			{
-				if( m2=="scissors" )
-				{
-					win[p2]++;loose[p1]++;
-				}
-				else
-				{
-					win[p1]++;loose[p2]++;
-				}
-			}
-			
-			if( m1=="scissors" )
-			{
-				if( m2=="rock" )
-				{
-					win[p2]++;loose[p1]++;
-				}
-				else
-				{
-					win[p1]++;loose[p2]++;
-				}
+				case WIN:win[p1]++,loose[p2]++;break;
+				case LOOSE:loose[p1]++,win[p2]++;break;
+				case TIE:default:break;
 			}
 		}
 		
 		for(int i=1;i<=n;i++)
 		{
-			if( win[i]+loose[i] == 0.0 )
+			if( win[i]+loose[i] == 0 )
 			{
-				puts("-");
+				cout<<"-\n";
 			}
 			else
 			{
-				printf("%.03f\n",win[i]/(win[i]+loose[i]));
+				int	result = ((win[i]*10000)/(win[i]+loose[i])+5)/10;
+
+				switch(to_string(result).length())
+				{
+					case 1:cout<<"0.00"<<result<<'\n';break;
+					case 2:cout<<"0.0"<<result<<'\n';break;
+					case 3:cout<<"0."<<result<<'\n';break;
+					case 4:cout<<"1.000\n";break;
+					default:/*do nothing*/;break;
+				}
 			}
 		}
-		puts("");
+
+		cout<<'\n';
 	}
 	
 	return	0;
