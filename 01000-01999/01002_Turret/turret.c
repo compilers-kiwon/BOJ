@@ -40,7 +40,7 @@ int		main(void)
 		{
 			if( r1 == r2 )
 			{
-				result = -1;
+				result = (r1==0.0)?1:-1;
 			}
 			else
 			{
