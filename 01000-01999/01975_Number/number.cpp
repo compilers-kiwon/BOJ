@@ -26,6 +26,9 @@ int init(int N)
 
 int main(void)
 {
+    cin.tie(NULL);
+    cin.sync_with_stdio(false);
+    
     for(int i=1;i<=MAX_NUM;i++)
     {
         init(i);
