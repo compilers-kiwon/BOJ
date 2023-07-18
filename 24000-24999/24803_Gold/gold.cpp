@@ -5,6 +5,9 @@ using namespace std;
 
 int main(void)
 {
+    cin.tie(NULL);
+    cin.sync_with_stdio(false);
+    
     int G,S,C,buying_power;
 
     cin>>G>>S>>C;
