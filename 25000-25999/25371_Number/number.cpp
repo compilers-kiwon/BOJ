@@ -5,7 +5,6 @@
 
 using namespace std;
 
-#define ctoi(c) ((int)((c)-'0'))
 #define itoc(i) ((char)((i)+(int)'0'))
 
 typedef long long int   int64;
