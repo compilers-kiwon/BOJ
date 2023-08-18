@@ -14,9 +14,8 @@ int main(void)
     cin>>n;
     sum = cnt = 0;
 
-    for(int64 i=1;;cnt++,i++)
-    {
-        if((sum+=i*i)>n) break;
+    for (int64 i=1;;cnt++,i++) {
+        if ((sum+=i*i) > n) break;
     }
 
     cout<<cnt<<'\n';
