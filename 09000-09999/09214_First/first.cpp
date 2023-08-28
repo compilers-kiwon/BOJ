@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define chr2int(c)  ((int)((c)-'0'))
+
 string  get_prev(string& cur)
 {
     if (cur.length()%2 != 0) return cur;
@@ -13,7 +15,7 @@ string  get_prev(string& cur)
         char    n = cur[i];
         char    c = cur[i+1];
 
-        for (int j=0;j<(int)(n-'0');j++) ret.push_back(c);
+        for (int j=0;j<chr2int(n);j++) ret.push_back(c);
     }
 
     return  ret;
