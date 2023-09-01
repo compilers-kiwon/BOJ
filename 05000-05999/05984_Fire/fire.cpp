@@ -3,6 +3,7 @@
 using namespace std;
 
 #define MAX_SIZE    (250)
+#define EMPTY       (-1)
 
 int main(void)
 {
@@ -20,13 +21,13 @@ int main(void)
         int next_pos = (cur_pos+(cur_cow+1))%N;
         int next_cow = chairs[next_pos];
 
-        if (next_cow==-1 ||
+        if (next_cow==EMPTY ||
                 moved[next_cow]==true) {
             e = cur_cow+1;
             break;
         }
 
-        chairs[cur_pos] = -1;
+        chairs[cur_pos] = EMPTY;
         cur_cow = next_cow;
         cur_pos = next_pos;
     }
