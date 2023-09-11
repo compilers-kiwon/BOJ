@@ -24,10 +24,8 @@ int fill_flag(int g_idx,int c_idx,char c)
     int left = grid[g_idx][c_idx].left;
     int right = grid[g_idx][c_idx].right;
 
-    for(int row=top;row<=bottom;row++)
-    {
-        for(int col=left;col<=right;col++)
-        {
+    for (int row=top;row<=bottom;row++) {
+        for(int col=left;col<=right;col++) {
             ret += (flag[row][col]!=c)?1:0;
         }
     }
@@ -39,14 +37,10 @@ int simulate(void)
 {
     int ret = 0x7FFFFFFF;
 
-    for(char top='A';top<='Z';top++)
-    {
-        for(char mid='A';mid<='Z';mid++)
-        {
-            for(char bottom='A';bottom<='Z';bottom++)
-            {
-                if(top==mid || mid==bottom)
-                {
+    for (char top='A';top<='Z';top++) {
+        for(char mid='A';mid<='Z';mid++) {
+            for(char bottom='A';bottom<='Z';bottom++) {
+                if (top==mid || mid==bottom) {
                     continue;
                 }
 
@@ -68,8 +62,7 @@ int main(void)
     cin.tie(NULL);
     cin.sync_with_stdio(false);
 
-    for(int row=1;row<=ROW_SIZE;row++)
-    {
+    for (int row=1;row<=ROW_SIZE;row++) {
         cin>>&flag[row][1];
     }
 
