@@ -33,6 +33,9 @@ void work(priority_queue<int>& pq, int M,
 }
 
 int main(void) {
+    cin.tie(NULL);
+    cin.sync_with_stdio(false);
+    
     int M,K, num_of_required_days;
     vector<int> s;
     priority_queue<int> job;
